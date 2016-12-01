@@ -448,7 +448,7 @@ class ReflectCommand(Command):
                 libraries=config['libraries'],
                 library_dirs=config['library_dirs'],
                 compiler=self.compiler,
-                verbose=not i,
+                verbose=True,
             ):
                 print('found')
                 found.append(func_name)
