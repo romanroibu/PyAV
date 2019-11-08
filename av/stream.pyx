@@ -116,13 +116,20 @@ cdef class Stream(object):
         setattr(self.codec_context, name, value)
 
     cdef _finalize_for_output(self):
-        dict_to_avdict(&self._stream.metadata, self.metadata,
+
+        dict_to_avdict(
+            &self._stream.metadata, self.metadata,
             clear=True,
             encoding=self._container.metadata_encoding,
             errors=self._container.metadata_errors,
         )
+
         if not self._stream.time_base.num:
             self._stream.time_base = self._codec_context.time_base
+
+        # It prefers if we pass it parameters via this other object.
+        # Lets just copy what we want.
+        err_check(lib.avcodec_parameters_from_context(self._stream.codecpar, self._stream.codec))
 
     def encode(self, frame=None):
         packets = self.codec_context.encode(frame)
